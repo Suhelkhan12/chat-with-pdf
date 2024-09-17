@@ -11,6 +11,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { MessageSquare } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import FileUpload from "./_components/file-upload";
 
 const page = async () => {
   const user = await currentUser();
@@ -22,14 +23,14 @@ const page = async () => {
     );
   }
   return (
-    <div className=" min-h-screen px-5 md:px-10 md:max-w-4xl mx-auto">
-      <div className="flex items-center justify-center gap-10 pt-10">
+    <div className=" min-h-screen px-5 md:px-10  mx-auto md:max-w-4xl pb-10 ">
+      <div className="flex items-center justify-between gap-10 pt-10">
         <h1 className=" text-3xl font-semibold ">DocDilogue</h1>
         <UserButton />
       </div>
 
-      <main className=" mt-8 space-y-4">
-        <Card className="">
+      <main className=" mt-8 space-y-4 ">
+        <Card>
           <CardHeader>
             <CardTitle className=" text-[1.5rem]">
               Welcome{" "}
@@ -54,7 +55,7 @@ const page = async () => {
             </Link>
           </CardContent>
         </Card>
-
+        <FileUpload />
         <Card>
           <CardHeader>
             <CardTitle className="text-[1.5rem]">How It Works</CardTitle>
@@ -76,30 +77,3 @@ const page = async () => {
 };
 
 export default page;
-
-/**
- * <Card>
-          <CardHeader>
-            <CardTitle>Upload a New PDF</CardTitle>
-            <CardDescription>Start a new conversation with a PDF document</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-2">
-              <Input
-                type="file"
-                accept=".pdf"
-                onChange={handleFileChange}
-                className="flex-grow"
-              />
-              <Button onClick={handleUpload} disabled={!file}>
-                <Upload className="mr-2 h-4 w-4" /> Upload
-              </Button>
-            </div>
-            {file && (
-              <p className="mt-2 text-sm text-gray-600">
-                Selected file: {file.name}
-              </p>
-            )}
-          </CardContent>
-        </Card>
- */
