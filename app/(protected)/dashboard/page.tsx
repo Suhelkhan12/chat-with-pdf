@@ -76,3 +76,30 @@ const page = async () => {
 };
 
 export default page;
+
+/**
+ * <Card>
+          <CardHeader>
+            <CardTitle>Upload a New PDF</CardTitle>
+            <CardDescription>Start a new conversation with a PDF document</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center space-x-2">
+              <Input
+                type="file"
+                accept=".pdf"
+                onChange={handleFileChange}
+                className="flex-grow"
+              />
+              <Button onClick={handleUpload} disabled={!file}>
+                <Upload className="mr-2 h-4 w-4" /> Upload
+              </Button>
+            </div>
+            {file && (
+              <p className="mt-2 text-sm text-gray-600">
+                Selected file: {file.name}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+ */
