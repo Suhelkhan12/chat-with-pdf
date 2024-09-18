@@ -44,15 +44,16 @@ const FilePreview = ({ fileUrl }: { fileUrl: string }) => {
     <Card>
       <CardHeader>
         <CardTitle>Uploaded file</CardTitle>
-        <CardContent>
-          <iframe
-            src={fileUrl}
-            width={"100%"}
-            height={"600px"}
-            className="rounded-lg"
-          />
-        </CardContent>
       </CardHeader>
+      <CardContent>
+        <iframe
+          src={fileUrl}
+          width={"100%"}
+          height={"600px"}
+          className="rounded-lg"
+          title="Pdf viewer"
+        />
+      </CardContent>
     </Card>
   );
 };
