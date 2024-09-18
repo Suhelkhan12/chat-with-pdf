@@ -1,6 +1,5 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { UploadDropzone } from "@/lib/uploadthing";
 import {
   Card,
   CardHeader,
@@ -8,131 +7,67 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Upload, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
+import { useState } from "react";
 
-// Input Component
-const FileInput = ({
-  file,
-  handleOnChange,
-}: {
-  file: File | null;
-  handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => (
-  <Input
-    type="file"
-    accept=".pdf"
-    onChange={handleOnChange}
-    className={`flex-grow cursor-pointer ${file ? "" : " text-red-500"}`}
-  />
-);
+interface FileUploadTypes {
+  setFile: (url: string) => void;
+}
 
-// File Preview Component
-const FilePreview = ({
-  file,
-  preview,
-  handleRemoveFile,
-}: {
-  file: File | null;
-  preview: string | null;
-  handleRemoveFile: () => void;
-}) => (
-  <>
-    <div className="mt-4">
-      <div className="flex items-center justify-between mb-2">
-        <p className="text-sm text-gray-600 truncate flex-grow mr-2">
-          {file?.name}
-        </p>
-        <Button
-          variant="ghost"
-          size="sm"
-          aria-label="Remove file"
-          onClick={handleRemoveFile}
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-      {preview && (
-        <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg border border-gray-200">
-          <iframe
-            src={preview}
-            className="absolute inset-0 h-full w-full"
-            title="PDF preview"
-          />
-        </div>
-      )}
-    </div>
-  </>
-);
-
-// File Upload Logic Component
-const FileUploadActions = ({
-  file,
-  handleUpload,
-}: {
-  file: File | null;
-  handleUpload: () => void;
-}) => (
-  <Button onClick={handleUpload} disabled={!file}>
-    <Upload className="mr-2 h-4 w-4" /> Upload
-  </Button>
-);
-
-// Main FileUpload Component
-const FileUpload = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) setFile(e.target.files[0]);
-  };
-
-  const handleUpload = () => {
-    if (file) {
-      // implement file uploading logic to AWS S3
-    }
-  };
-
-  const handleRemoveFile = () => {
-    setFile(null);
-    setPreview(null);
-  };
-
-  useEffect(() => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => setPreview(e.target?.result as string);
-      reader.readAsDataURL(file);
-      console.log(file);
-    } else {
-      setPreview(null);
-    }
-  }, [file]);
-
+const FileUpload = ({ setFile }: FileUploadTypes) => {
   return (
-    <Card className="flex-grow h-full">
+    <Card>
       <CardHeader>
-        <CardTitle>Upload a New PDF</CardTitle>
-        <CardDescription>
-          Start a new conversation with a PDF document
-        </CardDescription>
+        <CardTitle>Upload file</CardTitle>
+        <CardDescription>Files should be less tha 4MB</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col space-y-2">
-          <FileInput file={file} handleOnChange={handleOnChange} />
-          <FileUploadActions file={file} handleUpload={handleUpload} />
-        </div>
-        {file && (
-          <FilePreview
-            file={file}
-            preview={preview}
-            handleRemoveFile={handleRemoveFile}
-          />
-        )}
+        <UploadDropzone
+          endpoint="pdfUploader"
+          onClientUploadComplete={(res) => {
+            console.log("File: ", res);
+            setFile(res[0].url);
+          }}
+          onUploadError={(error: Error) => {
+            alert(`ERROR! ${error.message}`);
+          }}
+          className=" ut-label:text-base ut-label:font-semibold ut-allowed-content:ut-uploading:text-red-300 ut-button:bg-neutral-900 ut-label:cursor-pointer ut-upload-icon:cursor-pointer ut-button:cursor-pointer"
+          config={{ cn: twMerge }}
+        />
       </CardContent>
     </Card>
   );
 };
 
-export default FileUpload;
+const FilePreview = ({ fileUrl }: { fileUrl: string }) => {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Uploaded file</CardTitle>
+        <CardContent>
+          <iframe
+            src={fileUrl}
+            width={"100%"}
+            height={"600px"}
+            className="rounded-lg"
+          />
+        </CardContent>
+      </CardHeader>
+    </Card>
+  );
+};
+
+const FileUploader = () => {
+  const [file, setFile] = useState<string | null>(null);
+  return (
+    <>
+      {!file ? (
+        <FileUpload setFile={setFile} />
+      ) : (
+        <FilePreview fileUrl={file} />
+      )}
+    </>
+  );
+};
+
+export default FileUploader;
