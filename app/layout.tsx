@@ -3,6 +3,8 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
+import TanStackProvider from "@/providers/tanstack-provider";
+import { Toaster } from "sonner";
 
 const roboto = Roboto({
   weight: ["400", "500", "700", "900"],
@@ -22,13 +24,16 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={cn(roboto.variable, "text-black")}>
-          <div className="font-roboto bg-gradient-to-r from-rose-100 to-teal-100 ">
-            {children}
-          </div>
-        </body>
-      </html>
+      <TanStackProvider>
+        <html lang="en">
+          <body className={cn(roboto.variable, "text-black")}>
+            <div className="font-roboto bg-gradient-to-r from-rose-100 to-teal-100 ">
+              {children}
+            </div>
+            <Toaster />
+          </body>
+        </html>
+      </TanStackProvider>
     </ClerkProvider>
   );
 }

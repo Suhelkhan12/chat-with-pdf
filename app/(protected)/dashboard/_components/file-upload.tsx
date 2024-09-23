@@ -1,4 +1,6 @@
 "use client";
+
+import { useState } from "react";
 import { UploadDropzone } from "@/lib/uploadthing";
 import {
   Card,
@@ -7,15 +9,27 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { useMutation } from "@tanstack/react-query";
+import { postPdf } from "@/lib/api";
 import { twMerge } from "tailwind-merge";
-import { useState } from "react";
 import { ImSpinner3 } from "react-icons/im";
+import { toast } from "sonner";
 
 interface FileUploadTypes {
   setFile: (url: string) => void;
 }
 
 const FileUpload = ({ setFile }: FileUploadTypes) => {
+  const { mutate } = useMutation({
+    mutationFn: postPdf,
+    onSuccess: (data) => {
+      toast.success(data.message);
+    },
+    onError: (err) => {
+      toast.error(`${err} 💥`);
+    },
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -26,11 +40,16 @@ const FileUpload = ({ setFile }: FileUploadTypes) => {
         <UploadDropzone
           endpoint="pdfUploader"
           onClientUploadComplete={(res) => {
-            console.log("File: ", res);
-            setFile(res[0].url);
+            if (res) {
+              mutate({
+                file_key: res[0].key,
+                file_name: res[0].name,
+              });
+              setFile(res[0].url);
+            }
           }}
-          onUploadError={(error: Error) => {
-            alert(`ERROR! ${error.message}`);
+          onUploadError={() => {
+            toast.error("File too large 💥");
           }}
           className=" ut-label:text-base ut-label:font-semibold ut-allowed-content:ut-uploading:text-red-300 ut-button:bg-neutral-900 ut-label:cursor-pointer ut-upload-icon:cursor-pointer ut-button:cursor-pointer"
           config={{ cn: twMerge }}
