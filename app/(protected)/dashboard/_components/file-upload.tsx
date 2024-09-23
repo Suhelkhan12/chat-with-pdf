@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { twMerge } from "tailwind-merge";
 import { useState } from "react";
+import { ImSpinner3 } from "react-icons/im";
 
 interface FileUploadTypes {
   setFile: (url: string) => void;
@@ -40,18 +41,22 @@ const FileUpload = ({ setFile }: FileUploadTypes) => {
 };
 
 const FilePreview = ({ fileUrl }: { fileUrl: string }) => {
+  const [loading, setLoading] = useState<boolean>(true);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Uploaded file</CardTitle>
       </CardHeader>
       <CardContent>
+        {loading && <ImSpinner3 className="siz-4 mx-auto animate-spin" />}
         <iframe
           src={fileUrl}
           width={"100%"}
           height={"600px"}
           className="rounded-lg"
           title="Pdf viewer"
+          onLoad={() => setLoading(false)}
         />
       </CardContent>
     </Card>
