@@ -45,6 +45,7 @@ const FileUpload = ({ setFile }: FileUploadTypes) => {
                 file_key: res[0].key,
                 file_name: res[0].name,
               });
+              console.log("uploaded file ", res);
               setFile(res[0].url);
             }
           }}
