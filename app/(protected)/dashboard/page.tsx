@@ -7,14 +7,14 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { UserButton } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs/server";
 import { MessageSquare } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import FileUploader from "./_components/file-upload";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
-const page = async () => {
-  const user = await currentUser();
+const Page = () => {
+  const user = useCurrentUser();
   if (!user) {
     return (
       <div className="min-h-screen bg-black text-3xl font-bold">
@@ -30,8 +30,8 @@ const page = async () => {
       </div>
 
       <main className=" mt-8 space-y-4 ">
-        <div className=" flex gap-4">
-          <Card className=" w-1/2">
+        <div className=" flex gap-4 md:flex-row flex-col">
+          <Card className=" md:w-1/2 w-full">
             <CardHeader>
               <CardTitle className=" text-[1.5rem]">
                 Welcome{" "}
@@ -56,7 +56,7 @@ const page = async () => {
               </Link>
             </CardContent>
           </Card>
-          <Card className=" w-1/2">
+          <Card className=" md:w-1/2 w-full">
             <CardHeader>
               <CardTitle className="text-[1.5rem]">How It Works</CardTitle>
             </CardHeader>
@@ -78,4 +78,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default Page;

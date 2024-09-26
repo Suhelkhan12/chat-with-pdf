@@ -6,17 +6,16 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { file_key } = body;
-    console.log(file_key);
-    const pages = await loadPdfToPinecone(file_key);
-    console.log({ pages });
+    const pdfSegments = await loadPdfToPinecone(file_key);
     return NextResponse.json({
-      message: "Pdf upload successfull 🎊",
+      message: "Pdf segmented successfully 🎊",
+      pdfSegments,
     });
   } catch (err) {
     console.log(err);
     return NextResponse.json(
       {
-        error: "Internal server error",
+        message: "Internal server error",
       },
       {
         status: 500,
